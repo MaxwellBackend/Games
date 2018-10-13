@@ -1,6 +1,6 @@
 # Games 
 
-## 限流器
+## [限流器](./ratelimit)
 
 ## [协议加密](./security)
 
