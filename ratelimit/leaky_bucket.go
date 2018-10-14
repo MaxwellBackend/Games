@@ -6,46 +6,46 @@ import (
 
 // 漏桶算法
 type LeakyBucket struct {
-	capacity   int           // bucket总容量
-	interval   time.Duration // bucket满需要花费的时间
-	remain     int           // 剩余数量
-	lastAccess time.Time     // 上次访问时间
+	capacity     int           // bucket总容量
+	interval     time.Duration // 漏出水滴的时间
+	inDrops      int           // 当前bucket中的水滴数量
+	lastLeakTime time.Time     // 上次漏出时间
 }
 
 func NewLeakyBucket(interval time.Duration, capacity int) *LeakyBucket {
 	return &LeakyBucket{
-		interval:   interval,
-		capacity:   capacity,
-		remain:     capacity,
-		lastAccess: time.Now(),
+		interval:     interval,
+		capacity:     capacity,
+		inDrops:      0,
+		lastLeakTime: time.Now(),
 	}
 }
 
 func (l *LeakyBucket) Access() bool {
 	now := time.Now()
 
-	since := now.Sub(l.lastAccess)
+	since := now.Sub(l.lastLeakTime)
 
-	if since >= l.interval {
-		// 充满
-		l.remain = l.capacity
-	} else {
-		// 补充
-		add := int(float64(since) / float64(l.interval) * float64(l.capacity))
+	// 漏出的水滴数量
+	leaks := int(float64(since) / float64(l.interval))
 
-		if add+l.remain >= l.capacity {
-			l.remain = l.capacity
+	if leaks > 0 {
+		if l.inDrops <= leaks {
+			// 重置漏桶中的请求数量
+			l.inDrops = 0
 		} else {
-			l.remain = l.remain + add
+			// 减少漏桶中的请求数量
+			l.inDrops -= leaks
 		}
+		l.lastLeakTime = now
 	}
 
-	// 如果不够了，则直接返回失败
-	if l.remain <= 0 {
-		return false
+	// 漏桶未满
+	if l.inDrops < l.capacity {
+		l.inDrops++
+		return true
 	}
 
-	// 扣除
-	l.remain--
-	return true
+	// 漏桶已满
+	return false
 }
