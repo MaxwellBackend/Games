@@ -7,7 +7,6 @@ import (
 	"crypto/rc4"
 	"crypto/rsa"
 	"crypto/sha1"
-	"fmt"
 )
 
 var KEY []byte
@@ -27,10 +26,11 @@ func init() {
 	copy(KEY8[:], KEY)
 	copy(KEY32[:], KEY)
 
-	fmt.Println("key length:", len(KEY), string(KEY), KEY)
-	fmt.Println("key8 length:", len(KEY8), string(KEY8[:]), KEY8)
-	fmt.Println("key32 length:", len(KEY32), string(KEY32[:]), KEY32)
-
+	/*
+		fmt.Println("key length:", len(KEY), string(KEY), KEY)
+		fmt.Println("key8 length:", len(KEY8), string(KEY8[:]), KEY8)
+		fmt.Println("key32 length:", len(KEY32), string(KEY32[:]), KEY32)
+	*/
 	aesblock, _ = aes.NewCipher(KEY32[:])
 	desblock, _ = des.NewCipher(KEY8[:])
 	rc4cipher, _ = rc4.NewCipher(KEY32[:])
