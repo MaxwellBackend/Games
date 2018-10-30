@@ -33,7 +33,8 @@ func init() {
 	*/
 	aesblock, _ = aes.NewCipher(KEY32[:])
 	desblock, _ = des.NewCipher(KEY8[:])
-	rc4cipher, _ = rc4.NewCipher(KEY32[:])
+	erc4cipher, _ = rc4.NewCipher(KEY32[:])
+	drc4cipher, _ = rc4.NewCipher(KEY32[:])
 }
 
 var pubk *rsa.PublicKey

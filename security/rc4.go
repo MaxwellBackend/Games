@@ -4,12 +4,17 @@ import (
 	"crypto/rc4"
 )
 
-var rc4cipher *rc4.Cipher
+var erc4cipher *rc4.Cipher
+var drc4cipher *rc4.Cipher
 
-func Rc4Encrypt(buf, encrypted []byte) {
-	rc4cipher.XORKeyStream(buf, encrypted)
+func Rc4Encrypt(src []byte) []byte {
+	dst := make([]byte, len(src))
+	erc4cipher.XORKeyStream(dst, src)
+	return dst
 }
 
-func Rc4Decrypt(encrypted, buf []byte) {
-	rc4cipher.XORKeyStream(encrypted, buf)
+func Rc4Decrypt(src []byte) []byte {
+	dst := make([]byte, len(src))
+	drc4cipher.XORKeyStream(dst, src)
+	return dst
 }

@@ -20,8 +20,6 @@ func main() {
 			length = len(text)
 		}
 		bts = make([]byte, length)
-		dst = make([]byte, length)
-		tmp = make([]byte, length)
 		if text != "" {
 			copy(bts, []byte(text))
 		} else {
@@ -31,35 +29,35 @@ func main() {
 		}
 
 		time(func() {
-			Encrypt(bts[:], tmp[:])
+			tmp = Encrypt(bts)
 		}, "self encrypt")
 
 		time(func() {
-			Decrypt(tmp[:], dst[:])
+			dst = Decrypt(tmp)
 		}, "self decrypt")
 
 		time(func() {
-			AesEncrypt(bts[:], tmp[:])
+			tmp = AesEncrypt(bts)
 		}, "aes encrypt")
 
 		time(func() {
-			AesDecrypt(tmp[:], dst[:])
+			dst = AesDecrypt(tmp)
 		}, "aes decrypt")
 
 		time(func() {
-			DesEncrypt(bts[:], tmp[:])
+			tmp = DesEncrypt(bts)
 		}, "des encrypt")
 
 		time(func() {
-			DesDecrypt(tmp[:], dst[:])
+			dst = DesDecrypt(tmp)
 		}, "des decrypt")
 
 		time(func() {
-			Rc4Encrypt(bts[:], tmp[:])
+			tmp = Rc4Encrypt(bts)
 		}, "rc4 encrypt")
 
 		time(func() {
-			Rc4Decrypt(tmp[:], dst[:])
+			dst = Rc4Decrypt(tmp)
 		}, "rc4 decrypt")
 
 		fmt.Println()
