@@ -29,3 +29,6 @@ Benchmark_aes-4          1000000              1000 ns/op
 Benchmark_des-4           500000              3543 ns/op
 Benchmark_rc4-4          5000000               282 ns/op
 ```
+
+### 链接
+1. [加密博文](https://www.jianshu.com/p/26b6f417413a)
