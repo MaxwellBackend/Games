@@ -4,7 +4,13 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
+	"crypto/rand"
 	"crypto/rc4"
+	"crypto/rsa"
+	"crypto/sha1"
+	"crypto/x509"
+	"encoding/pem"
+	"io/ioutil"
 )
 
 type ICipher interface {
@@ -97,5 +103,39 @@ func (this *Rc4Cipher) Encrypt(src []byte) []byte {
 func (this *Rc4Cipher) Decrypt(src []byte) []byte {
 	dst := make([]byte, len(src))
 	this.d.XORKeyStream(dst, src)
+	return dst
+}
+
+// RSA
+// pub 公钥文件路径
+// priv 私钥文件路径
+func NewRsaCipher(pub, priv string) *RsaCipher {
+	data, _ := ioutil.ReadFile(pub)
+	block, _ := pem.Decode(data)
+	key, _ := x509.ParsePKIXPublicKey(block.Bytes)
+	pubk := key.(*rsa.PublicKey)
+
+	data, _ = ioutil.ReadFile(priv)
+	block, _ = pem.Decode(data)
+	privk, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	return &RsaCipher{
+		pubk:  pubk,
+		privk: privk,
+	}
+}
+
+type RsaCipher struct {
+	pubk  *rsa.PublicKey
+	privk *rsa.PrivateKey
+}
+
+func (this *RsaCipher) Encrypt(src []byte) []byte {
+	dst, _ := rsa.EncryptOAEP(sha1.New(), rand.Reader, this.pubk, src, []byte(""))
+	return dst
+}
+
+func (this *RsaCipher) Decrypt(src []byte) []byte {
+	dst, _ := rsa.DecryptOAEP(sha1.New(), rand.Reader, this.privk, src, []byte(""))
 	return dst
 }

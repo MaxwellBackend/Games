@@ -28,4 +28,3 @@ Benchmark_aes-4         20000000                62.5 ns/op
 Benchmark_des-4          5000000               304 ns/op
 Benchmark_rc4-4         10000000               220 ns/op
 ```
-``

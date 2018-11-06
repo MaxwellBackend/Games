@@ -42,7 +42,6 @@ func DHKey(SECRET, MODPOWER *big.Int) *big.Int {
 }
 
 // Padding
-
 func PKCS5Padding(src []byte, blockSize int) []byte {
 	padding := blockSize - len(src)%blockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)

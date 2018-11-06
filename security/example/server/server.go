@@ -28,8 +28,20 @@ func main() {
 
 func handleConn(conn net.Conn) {
 	reader := bufio.NewReader(conn)
+	// hand shake
+	rsa := util.NewRsaCipher("pem/client_public.pem", "pem/server_private.pem")
 	line, _, _ := reader.ReadLine()
+	msg0 := msg.MsgHandShake{}
+	json.Unmarshal(line, &msg0)
+	key0 := rsa.Decrypt(msg0.Key)
+	msg0.Key = rsa.Encrypt(key0)
+	log.Printf("key0:%s,Key:%s", key0, msg0.Key)
+	line, _ = json.Marshal(&msg0)
+	conn.Write(line)
+	conn.Write([]byte("\n"))
 
+	// key exchange
+	line, _, _ = reader.ReadLine()
 	msg1 := msg.MsgKeyExchange{}
 	json.Unmarshal(line, &msg1)
 	log.Printf("recive key exchange  %v", msg1)
@@ -47,6 +59,7 @@ func handleConn(conn net.Conn) {
 	conn.Write([]byte("\n"))
 	log.Printf("response key exchange  %s", line)
 
+	// data encode/decode
 	decoder := util.NewAesCipher(util.Itob(key1))
 	encoder := util.NewAesCipher(util.Itob(key2))
 
