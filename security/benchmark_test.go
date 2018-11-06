@@ -1,8 +1,15 @@
-package util
+package security
 
 import (
 	"testing"
 )
+
+func Benchmark_rsa(b *testing.B) {
+	for k := 0; k < b.N; k++ {
+		tmp = rsaCipher.Encrypt(bts)
+		dst = rsaCipher.Decrypt(tmp)
+	}
+}
 
 func Benchmark_aes(b *testing.B) {
 	for k := 0; k < b.N; k++ {

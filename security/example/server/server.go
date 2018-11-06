@@ -6,8 +6,9 @@ import (
 	"log"
 	"math/big"
 	"net"
-	"security/example/msg"
-	"security/util"
+
+	"github.com/MaxwellBackend/Games/security"
+	"github.com/MaxwellBackend/Games/security/example/msg"
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 func handleConn(conn net.Conn) {
 	reader := bufio.NewReader(conn)
 	// hand shake
-	rsa := util.NewRsaCipher("pem/client_public.pem", "pem/server_private.pem")
+	rsa := security.NewRsaCipher("pem/client_public.pem", "pem/server_private.pem")
 	line, _, _ := reader.ReadLine()
 	msg0 := msg.MsgHandShake{}
 	json.Unmarshal(line, &msg0)
@@ -46,10 +47,10 @@ func handleConn(conn net.Conn) {
 	json.Unmarshal(line, &msg1)
 	log.Printf("recive key exchange  %v", msg1)
 
-	x1, e1 := util.DHExchange()
-	key1 := util.DHKey(x1, big.NewInt(msg1.SendSeed))
-	x2, e2 := util.DHExchange()
-	key2 := util.DHKey(x2, big.NewInt(msg1.ReciveSeed))
+	x1, e1 := security.DHExchange()
+	key1 := security.DHKey(x1, big.NewInt(msg1.SendSeed))
+	x2, e2 := security.DHExchange()
+	key2 := security.DHKey(x2, big.NewInt(msg1.ReciveSeed))
 	log.Printf("key1:%v,key2:%v", key1, key2)
 
 	msg1.SendSeed = e1.Int64()
@@ -60,8 +61,8 @@ func handleConn(conn net.Conn) {
 	log.Printf("response key exchange  %s", line)
 
 	// data encode/decode
-	decoder := util.NewAesCipher(util.Itob(key1))
-	encoder := util.NewAesCipher(util.Itob(key2))
+	decoder := security.NewAesCipher(security.Itob(key1))
+	encoder := security.NewAesCipher(security.Itob(key2))
 
 	line, _, _ = reader.ReadLine()
 	line = decoder.Decrypt(line)

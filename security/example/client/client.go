@@ -7,9 +7,10 @@ import (
 	"log"
 	"math/big"
 	"net"
-	"security/example/msg"
-	"security/util"
 	"time"
+
+	"github.com/MaxwellBackend/Games/security"
+	"github.com/MaxwellBackend/Games/security/example/msg"
 )
 
 func main() {
@@ -20,8 +21,8 @@ func main() {
 	}
 	reader := bufio.NewReader(conn)
 	// hand shake
-	rsa := util.NewRsaCipher("pem/server_public.pem", "pem/client_private.pem")
-	key0 := []byte(fmt.Sprintf("%v", util.RandUint(1000, 9999)))
+	rsa := security.NewRsaCipher("pem/server_public.pem", "pem/client_private.pem")
+	key0 := []byte(fmt.Sprintf("%v", security.RandUint(1000, 9999)))
 	msg0 := msg.MsgHandShake{}
 	msg0.Key = rsa.Encrypt(key0)
 	bts, _ := json.Marshal(&msg0)
@@ -39,8 +40,8 @@ func main() {
 	}
 
 	// key exchange
-	x1, e1 := util.DHExchange()
-	x2, e2 := util.DHExchange()
+	x1, e1 := security.DHExchange()
+	x2, e2 := security.DHExchange()
 	msg1 := msg.MsgKeyExchange{}
 	msg1.SendSeed = e1.Int64()
 	msg1.ReciveSeed = e2.Int64()
@@ -53,13 +54,13 @@ func main() {
 	json.Unmarshal(bts, &msg1)
 	log.Printf("recive key exchange %v", msg1)
 
-	key1 := util.DHKey(x1, big.NewInt(msg1.SendSeed))
-	key2 := util.DHKey(x2, big.NewInt(msg1.ReciveSeed))
+	key1 := security.DHKey(x1, big.NewInt(msg1.SendSeed))
+	key2 := security.DHKey(x2, big.NewInt(msg1.ReciveSeed))
 	log.Printf("key1:%v,key2:%v", key1, key2)
 
 	// data encode/decode
-	encoder := util.NewAesCipher(util.Itob(key1))
-	decoder := util.NewAesCipher(util.Itob(key2))
+	encoder := security.NewAesCipher(security.Itob(key1))
+	decoder := security.NewAesCipher(security.Itob(key2))
 
 	msg2 := msg.MsgHello{}
 	msg2.Data = "hello world!"

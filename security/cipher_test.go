@@ -1,8 +1,17 @@
-package util
+package security
 
 import (
 	"testing"
 )
+
+func Test_rsa(t *testing.T) {
+	tmp = rsaCipher.Encrypt(bts)
+	dst = rsaCipher.Decrypt(tmp)
+	t.Logf(string(dst))
+	if string(bts) != string(dst) {
+		t.Error("no eq")
+	}
+}
 
 func Test_des(t *testing.T) {
 	tmp = desCipher.Encrypt(bts)
