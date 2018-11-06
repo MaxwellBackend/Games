@@ -24,7 +24,8 @@
 64
 goos: darwin
 goarch: amd64
-Benchmark_aes-4         20000000                62.5 ns/op
-Benchmark_des-4          5000000               304 ns/op
-Benchmark_rc4-4         10000000               220 ns/op
+Benchmark_rsa-4             2000            651845 ns/op
+Benchmark_aes-4          1000000              1000 ns/op
+Benchmark_des-4           500000              3543 ns/op
+Benchmark_rc4-4          5000000               282 ns/op
 ```
