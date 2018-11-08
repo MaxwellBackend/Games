@@ -1,0 +1,5 @@
+tags
+build64_release/
+.Building.lock
+.sconsign.dblite
+blade-bin

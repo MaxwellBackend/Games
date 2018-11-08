@@ -1,0 +1,19 @@
+
+// syntax = "proto3";
+
+package example;
+
+message CalRequest {
+    required int32 a = 1;
+    required int32 b = 2;
+}
+
+message CalResponse {
+    required int32 c = 1;
+}
+
+service Calculator { 
+    rpc add(CalRequest) returns (CalResponse);
+    rpc sub(CalRequest) returns (CalResponse);
+}
+
