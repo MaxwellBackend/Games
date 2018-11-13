@@ -53,10 +53,10 @@
 ```lua
 local skynet = require "skynet"
 
-// 状态
+-- 状态
 local db = {}
 
-// 动作
+-- 动作
 local command = {}
 
 function command.GET(key)
@@ -69,7 +69,7 @@ function command.SET(key, value)
 	return last
 end
 
-// 消息
+-- 消息
 skynet.start(function()
 	skynet.dispatch("lua", function(session, address, cmd, ...)
 		cmd = cmd:upper()
@@ -192,4 +192,3 @@ send_msg xxxx # 发送一条聊天信息
 ### 总结
 1. skynet框架只提供基础层代码，游戏业务层逻辑，游戏管理层工具还需要自己实现
 2. skynet消息调度机制决定了其不擅长处理CPU密集的长作业
-3. 
