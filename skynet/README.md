@@ -159,7 +159,7 @@ end)
 3. xx_svr用来放各个独立的进程代码。
 4. config用来放配置文件。bin下面用来放启动脚本
 
-skynet网络服务三剑客：
+#### skynet网络服务三剑客：
 1. gate 网关负责客户端连接和数据传输
 2. watchdog 看门狗，负责唤醒后端其他服务
 3. agent 客户端在服务端对应的代理，负责接收客户端消息，转发到后端服务
@@ -171,18 +171,18 @@ skynet网络服务三剑客：
 3. lib/proto.lua 协议定义文件
 4. 服务启动顺序chat, watchdog, gate, agent
 
-服务端进程启动：
+* 服务端进程启动：
 ```bash
 /project/skynet/skynet /project/skynet_chat_server/config/config_chat 
 ```
 
-客户端命令行连接：
+* 客户端命令行连接：
 ```bash
 # 可以启动两个客户端 互相聊天
 /project/skynet/3rd/lua/lua /project/skynet_chat_server/bin/client.lua
 ```
 
-聊天：
+* 聊天：
 ```bash
 query_msg # 查询历史聊天记录
 
@@ -191,3 +191,5 @@ send_msg xxxx # 发送一条聊天信息
 
 ### 总结
 1. skynet框架只提供基础层代码，游戏业务层逻辑，游戏管理层工具还需要自己实现
+2. skynet消息调度机制决定了其不擅长处理CPU密集的长作业
+3. 
