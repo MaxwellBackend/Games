@@ -39,13 +39,30 @@
 
 每个服务就是一个actor，可以用c语音编写，也可以用lua编写。
 
-用c实现skynet服务：
+#### 用c实现skynet服务：
 1. 模块定义，实现接口create，init，signal和release,
 2. 编译成so库
 3. 调用该so库api的句柄，加载到modules列表
 4. 用时调用
 
-用lua实现skynet服务：
+```c
+// skynet_module.h
+typedef void * (*skynet_dl_create)(void);
+typedef int (*skynet_dl_init)(void * inst, struct skynet_context *, const char * parm);
+typedef void (*skynet_dl_release)(void * inst);
+typedef void (*skynet_dl_signal)(void * inst, int signal);
+ 
+struct skynet_module {
+	const char * name;          // C服务名称，一般是C服务的文件名
+	void * module;              // 访问该so库的dl句柄，该句柄通过dlopen函数获得
+	skynet_dl_create create;    // 绑定so库中的xxx_create函数，通过dlsym函数实现绑定，调用该create即是调用xxx_create
+	skynet_dl_init init;        // 绑定so库中的xxx_init函数，调用该init即是调用xxx_init
+	skynet_dl_release release;  // 绑定so库中的xxx_release函数，调用该release即是调用xxx_release
+	skynet_dl_signal signal;    // 绑定so库中的xxx_signal函数，调用该signal即是调用xxx_signal
+};
+```
+
+#### 用lua实现skynet服务：
 1. 定义行为
 2. 分发消息
 
@@ -168,8 +185,9 @@ end)
 #### 聊天服务器源码简介
 1. config/config.path 定义源码搜索路径，config/config_chat定义进程启动参数
 2. main.lua 启动脚本，负责启动基本的服务，包括watchdog
-3. lib/proto.lua 协议定义文件
-4. 服务启动顺序chat, watchdog, gate, agent
+3. service目录chat聊天服务，agent代理服务，watchdog看门狗服务，protoloader协议加载服务
+4. lib/proto.lua 协议定义文件
+5. 服务启动顺序chat, watchdog, gate, agent
 
 * 服务端进程启动：
 ```bash
@@ -192,3 +210,14 @@ send_msg xxxx # 发送一条聊天信息
 ### 总结
 1. skynet框架只提供基础层代码，游戏业务层逻辑，游戏管理层工具还需要自己实现
 2. skynet消息调度机制决定了其不擅长处理CPU密集的长作业
+3. skynet将网关，代理，其他后端服务等actor，但运行在同一个进程中；如果一个玩法一个服务，很容易实现一个单服玩法都放在一起的游戏，或者区服概念比较弱的游戏类型。
+4. 至于是单进程单服，还是单进程多服还需要使用者去取舍。
+5. 跨服玩法可以采用skynet的集群方案。
+
+### 参考链接：
+
+[skynet源码地址](https://github.com/cloudwu/skynet)
+
+[skynet设计综述](https://blog.codingnow.com/2012/09/the_design_of_skynet.html)
+
+[聊天服务器源码地址](https://github.com/MaxwellBackend/Games)
