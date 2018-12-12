@@ -8,4 +8,6 @@
 
 ## [skynet框架使用案例](./skynet)
 
+## [一致性hash](./consistent_hash)
+
 ## 夏令时和冬令时处理
